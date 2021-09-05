@@ -55,7 +55,12 @@ pipeline {
  stage('Run Docker container on remote hosts') {
              
             steps {
-                sh "docker -H ssh://ec2-user@54.165.130.202 run -d -p 8003:8080 esso4real/samplewebapp"
+		    script {
+		      def dockerCmd = "docker run -d -p 8003:8080 esso4real/samplewebapp "
+			    sshagent(['pem-key']) {
+				    sh "ssh -o StrickHostKeyChecking=no ec2-user@54.165.130.202 ${dockerCmd}"
+                          }
+		    }
  
             }
         }
