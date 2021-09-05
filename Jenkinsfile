@@ -34,10 +34,12 @@ pipeline {
   stage('Publish image to Docker Hub') {
           
             steps {
-        withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
-          sh  'docker push esso4real/samplewebapp:latest'
-        
-        }
+		    script {
+		       withCredentials([usernamePassword(credentialsId: 'hud-docker', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                         sh "echo $PASS | docker login -u $USER --password-stdin"
+			       sh "docker push esso4real/samplewebapp:latest"
+}
+		    }
                   
           }
         }
